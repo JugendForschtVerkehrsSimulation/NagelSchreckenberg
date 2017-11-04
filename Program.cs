@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.IO;
 
 namespace NagelSchreckenberg
@@ -10,17 +11,36 @@ namespace NagelSchreckenberg
 		
 		public static void Main(string[] args)
 		{
+			
+			Simulation sim = new Simulation();
+			
 			using ( StreamWriter Ausgabe = File.CreateText(ausgabePfad))
 			{
-				Ausgabe.WriteLine("Neue Simulation gestartet");
+				Ausgabe.WriteLine("Neue Ampel-Simulation gestartet (Vorbereitung 500 Schritte)");
+				Ausgabe.WriteLine("");
 			}
 			using ( StreamWriter einfacheAusgabe = File.CreateText(einfacheAusgabePfad))
 			{
-				einfacheAusgabe.WriteLine("Neue Simulation gestartet");
+				einfacheAusgabe.WriteLine("Neue Ampel-Simulation gestartet (Vorbereitung 500 Schritte)");
+				einfacheAusgabe.WriteLine("");
 			}
-			Simulation sim = new Simulation();
-			sim.Ausgeben(ausgabePfad);
-			for (int i = 0; i < 400; i++) {
+			
+			sim.EinfacheAusgabe(einfacheAusgabePfad);
+			
+			using ( StreamWriter einfacheAusgabe = File.AppendText(einfacheAusgabePfad))
+			{
+				einfacheAusgabe.WriteLine("");
+			}
+			
+			for (int i = 0; i < 500; i++)						//Vorbereitung (500 Runden ohne Ausgabe)
+			{
+				sim.NaSch();
+			}
+			
+			sim.schritte = 0;
+			
+			for (int i = 0; i < 1000; i++) 						//1000 mal durchlaufen von Simulationsschritten, ...
+			{
 //				Console.WriteLine("--------- Schritt Nr. " + i + " -------------");
 				sim.NaSch();
 				sim.Ausgeben(ausgabePfad);
@@ -28,10 +48,13 @@ namespace NagelSchreckenberg
 				
 				//Console.ReadKey(true);
 			}
+			Console.WriteLine("Simulation beendet.");
 			Console.ReadLine();
 		}
 	}
 }
+
+
 
 /*public static void printStrasse(int[] Array)											//Starße ausgeben
 		{
@@ -82,7 +105,7 @@ namespace NagelSchreckenberg
 			{
 				if (Auto[A2] != -1 && Auto[A2] < Max)
 				{
-					Auto[A2] = Auto[A2] + Beschleunigung;
+				Auto[A2] = Auto[A2] + Beschleunigung;
 				}
 
 				for (int j = 1; j <= Auto[A2]; j++)

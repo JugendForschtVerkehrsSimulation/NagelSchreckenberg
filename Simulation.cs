@@ -1,11 +1,12 @@
-﻿/*
- * Created by SharpDevelop.
+﻿
+/* Created by SharpDevelop.
  * User: freudis
  * Date: 06.10.2017
  * Time: 18:24
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+
 using System;
 using System.IO;
 
@@ -16,28 +17,43 @@ namespace NagelSchreckenberg
 	/// </summary>
 	public class Simulation
 	{
+		private static Random Zufall = new Random();
+		public static int Straße = 200;
 		public int schritte = 0;
 		public Auto[] autos = new Auto[40];
+		public Ampel[] ampeln = new Ampel[2];
+//		public int anzahl = 80;
 		
 		public Simulation()
 		{
-			for (int i = 0; i < autos.Length; i++) {
+			for (int i = 0; i < autos.Length; i++) 						//initialisiere Autos
+			{
 				autos[i] = new Auto();
 			}
-			int Position = 2;
+			
+			int positionsAbschnitt = Straße / autos.Length;
+			int Position = 0;
+			
 			foreach (Auto a in autos)
 			{
 				a.Position = Position;
-				Position = Position + 4;
+				Position = Position + positionsAbschnitt;
 			}
+			
+//			for (int i = 0; i < ampeln.Length; i++)						//initialisiere Ampeln
+//			{
+			ampeln[0] = new Ampel(88, 50, 40, 0);						//int ULZ, int POSI, int GPL, int VER
+			ampeln[1] = new Ampel(88, 150, 40, 22);
+//			}
 		}
+		
 		public void NaSch() {
 			for (int i = 0; i < autos.Length; i++) {
 				Auto vordermann = autos[(i+1) % autos.Length];
 //				Console.Write("Auto: " + i + " -> v: " + autos[i].Geschwindigkeit );
 				autos[i].Beschleunigen();
 //				Console.Write(" -> a: " + autos[i].Geschwindigkeit );
-				autos[i].Bremsen(vordermann);
+				autos[i].Bremsen(vordermann, ampeln, schritte);
 //				Console.Write(" -> b: " + autos[i].Geschwindigkeit );
 				autos[i].Trödeln();
 //				Console.WriteLine(" -> t: " + autos[i].Geschwindigkeit );
@@ -64,6 +80,17 @@ namespace NagelSchreckenberg
 				{
 //				Console.WriteLine("debug: " + a.Position + a.Geschwindigkeit);
 					einfacheAusgabeText[Convert.ToInt32(a.Position)] = Convert.ToChar(Convert.ToString(Convert.ToInt32(a.Geschwindigkeit)));
+				}
+				foreach (Ampel a in ampeln)
+				{
+					if (a.zeigePhase(schritte) == 0)
+					{
+						einfacheAusgabeText[Convert.ToInt32(a.Position)] = 'G';
+					}
+					else
+					{
+						einfacheAusgabeText[Convert.ToInt32(a.Position)] = 'R';
+					}
 				}
 				
 				einfacheAusgabe.WriteLine(einfacheAusgabeText.ToString());

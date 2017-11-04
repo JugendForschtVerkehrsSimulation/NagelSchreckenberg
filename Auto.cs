@@ -6,6 +6,7 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+
 using System;
 
 namespace NagelSchreckenberg
@@ -42,7 +43,7 @@ namespace NagelSchreckenberg
 				Geschwindigkeit = Geschwindigkeit + Beschleunigung;
 			}
 		}
-		private int Entfernung(Auto Vordermann)
+		private int EntfernungZumVordermann(Auto Vordermann)
 		{
 //			Console.Write(" [VM:" + Vordermann.Position );
 //			Console.Write(" This:" + this.Position +"] ");
@@ -53,20 +54,61 @@ namespace NagelSchreckenberg
 		    return Vordermann.Position - this.Position;
 		}
 		
-		public void Bremsen(Auto Vordermann)
+		private int EntfernungZurAmpel(Ampel[] ampeln, int t)
 		{
-			int entfernungZumVordermann = Entfernung(Vordermann);
-			
-			//Console.Write(" -> D: " + entfernungZumVordermann );
-			if (Geschwindigkeit >= entfernungZumVordermann)
+			int aktuellerAbstand;
+			int minimalerAbstand = Straße;
+				
+			foreach (Ampel a in ampeln)
 			{
-				Geschwindigkeit = entfernungZumVordermann - 1;
+				if (a.zeigePhase(t) == 1)
+				{
+					if (a.Position - this.Position < 0)
+					{
+						aktuellerAbstand = a.Position - this.Position + Straße;
+					}
+					else
+					{
+						aktuellerAbstand = a.Position - this.Position;
+					}
+					
+					if (aktuellerAbstand < minimalerAbstand)
+					{
+						minimalerAbstand = aktuellerAbstand;
+					}
+				}
+			}
+			return minimalerAbstand;
+		}
+		
+		public void Bremsen(Auto Vordermann, Ampel[] ampeln, int t)
+		{
+			int entfernungZumVordermann = EntfernungZumVordermann(Vordermann);
+			int entfernungZurAmpel = EntfernungZurAmpel(ampeln, t);
+			int entfernungHindernis;
+			
+			if (entfernungZurAmpel < entfernungZumVordermann)
+			{
+				entfernungHindernis = entfernungZurAmpel;
+			}
+			else
+			{
+				entfernungHindernis = entfernungZumVordermann;
+			}
+			
+			if (Geschwindigkeit >= entfernungHindernis)
+			{
+				Geschwindigkeit = entfernungHindernis - 1;
+			}
+			if (Geschwindigkeit < 0)
+			{
+				Geschwindigkeit = 0;
 			}
 		}
 		
 		public void Trödeln()
 		{
-			if (Zufall.NextDouble() < 0.1 && Geschwindigkeit > 0)
+			if (Zufall.NextDouble() < 0.05 && Geschwindigkeit > 0)
 			{
 				Geschwindigkeit--;
 			}
