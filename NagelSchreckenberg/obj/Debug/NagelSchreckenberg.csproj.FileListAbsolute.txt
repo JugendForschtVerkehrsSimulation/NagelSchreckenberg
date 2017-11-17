@@ -1,6 +1,0 @@
-C:\Users\freudis\Documents\SharpDevelop Projects\JugendForscht\NagelSchreckenberg\bin\Debug\NagelSchreckenberg.exe.config
-C:\Users\freudis\Documents\SharpDevelop Projects\JugendForscht\NagelSchreckenberg\bin\Debug\NagelSchreckenberg.exe
-C:\Users\freudis\Documents\SharpDevelop Projects\JugendForscht\NagelSchreckenberg\bin\Debug\NagelSchreckenberg.pdb
-C:\Users\freudis\Documents\SharpDevelop Projects\JugendForscht\NagelSchreckenberg\obj\Debug\NagelSchreckenberg.csprojResolveAssemblyReference.cache
-C:\Users\freudis\Documents\SharpDevelop Projects\JugendForscht\NagelSchreckenberg\obj\Debug\NagelSchreckenberg.exe
-C:\Users\freudis\Documents\SharpDevelop Projects\JugendForscht\NagelSchreckenberg\obj\Debug\NagelSchreckenberg.pdb
