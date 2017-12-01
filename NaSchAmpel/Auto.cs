@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 namespace NagelSchreckenberg
 {
@@ -28,6 +29,8 @@ namespace NagelSchreckenberg
 		
 		public int Beschleunigung;
 		
+//		public int Autonummer;
+		
 		public Auto()
 		{
 			MaximalGeschwindigkeit = 5;
@@ -35,6 +38,22 @@ namespace NagelSchreckenberg
 			Position = 0;
 			Beschleunigung = 1;
 		}
+		
+		public Auto( Auto vordermann ) 
+		{
+        	this.MaximalGeschwindigkeit = 5;
+        	this.Geschwindigkeit = Zufall.Next(1, MaximalGeschwindigkeit + 1);
+        	this.Position = vordermann.Position - 3;
+        	this.Beschleunigung = 1;
+    	}
+		
+		public Auto( int zielPosi ) 
+		{
+        	this.MaximalGeschwindigkeit = 0;
+        	this.Geschwindigkeit = 0;
+        	this.Position = zielPosi;
+        	this.Beschleunigung = 0;
+    	}
 		
 		public void Beschleunigen()
 		{
@@ -45,8 +64,6 @@ namespace NagelSchreckenberg
 		}
 		private int EntfernungZumVordermann(Auto Vordermann)
 		{
-//			Console.Write(" [VM:" + Vordermann.Position );
-//			Console.Write(" This:" + this.Position +"] ");
 			if (Vordermann.Position - this.Position < 0)
 			{
 				return Vordermann.Position - this.Position + Straße;
@@ -118,14 +135,11 @@ namespace NagelSchreckenberg
 		public void Fahren()
 		{
 			Position = Position + Geschwindigkeit;
-			if (Position >= Straße)
-			{
-				Position = Position - Straße;
-			}
 		}
+		
 		public override string ToString()
 		{
-			//return string.Format("[Auto Geschwindigkeit={0}, Position={1}]", Geschwindigkeit, Position);
+
 			return string.Format("{0},{1}", Geschwindigkeit, Position);
 		}
 

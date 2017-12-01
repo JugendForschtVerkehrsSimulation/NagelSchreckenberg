@@ -9,6 +9,7 @@
 
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace NagelSchreckenberg
 {
@@ -20,18 +21,14 @@ namespace NagelSchreckenberg
 		private static Random Zufall = new Random();
 		public static int Straße = 400;
 		public int schritte = 0;
-		public Auto[] autos = new Auto[100];
+		public int maxAutos = 100;
+		public List<Auto> autos = new List<Auto>();
+		//public Auto[] autos = new Auto[100];
 		public Ampel[] ampeln = new Ampel[3];
-//		public int anzahl = 80;
 		
 		public Simulation()
 		{
-			for (int i = 0; i < autos.Length; i++) 						//initialisiere Autos
-			{
-				autos[i] = new Auto();
-			}
-			
-			int positionsAbschnitt = Straße / autos.Length;
+			int positionsAbschnitt = Straße / maxAutos;
 			int Position = 0;
 			
 			foreach (Auto a in autos)
@@ -49,20 +46,47 @@ namespace NagelSchreckenberg
 		}
 		
 		public void NaSch() {
-			for (int i = 0; i < autos.Length; i++) {
-				Auto vordermann = autos[(i+1) % autos.Length];
-//				Console.Write("Auto: " + i + " -> v: " + autos[i].Geschwindigkeit );
+			
+			if ( autos.Count <= maxAutos) 
+			{
+        		if ( autos.Count == 0 ) 
+        		{
+            		autos.Add(new Auto());
+        		}
+	        	else 
+	        	{
+	        		Auto vordermann = autos[autos.Count-1];
+	            	autos.Add(new Auto(vordermann));
+	        	}
+   			}		
+			for (int i = 0; i < autos.Count; i++) 
+			{
+				if (i == 0)
+				{
+					Auto vordermann = new Auto(Straße + 10000);
+				}
+				else
+				{
+					Auto vordermann = autos[i-1];
+				}
+				
 				autos[i].Beschleunigen();
-//				Console.Write(" -> a: " + autos[i].Geschwindigkeit );
 				autos[i].Bremsen(vordermann, ampeln, schritte);
-//				Console.Write(" -> b: " + autos[i].Geschwindigkeit );
 				autos[i].Trödeln();
-//				Console.WriteLine(" -> t: " + autos[i].Geschwindigkeit );
 			}
 			foreach (Auto a in autos)
 			{
 				a.Fahren();
 			}
+			for (int i = 0; i < autos.Count; i++)
+			{
+				if ( autos[i].Position > Straße )
+				{
+					autos.RemoveAt(i);
+				}
+			}
+			
+			
 			schritte++;
 		}
 		
@@ -79,7 +103,6 @@ namespace NagelSchreckenberg
 				
 				foreach (Auto a in autos)
 				{
-//				Console.WriteLine("debug: " + a.Position + a.Geschwindigkeit);
 					einfacheAusgabeText[Convert.ToInt32(a.Position)] = Convert.ToChar(Convert.ToString(Convert.ToInt32(a.Geschwindigkeit)));
 				}
 				foreach (Ampel a in ampeln)
@@ -93,21 +116,13 @@ namespace NagelSchreckenberg
 						einfacheAusgabeText[Convert.ToInt32(a.Position)] = 'R';
 					}
 				}
-				
 				einfacheAusgabe.WriteLine(einfacheAusgabeText.ToString());
-				//Console.WriteLine();
-				//Console.Write("Press any key to continue . . . ");
-				//Console.Clear;
-				//Console.ReadKey(true);
 			}
 		}
 		
 		public void Ausgeben(string pfadName) {
 			using ( StreamWriter ausgabe = File.AppendText(pfadName))
 			{
-				
-				//ausgabe.WriteLine("Schritt {0} der Simulation: ", schritte);
-				
 				foreach (Auto a in autos)
 				{
 					ausgabe.WriteLine("{0},{1}",schritte, a);

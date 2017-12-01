@@ -8,7 +8,7 @@
  */
 using System;
 
-namespace NaSchAmpel
+namespace NagelSchreckenberg
 {
 	/// <summary>
 	/// Description of Spur.
@@ -16,7 +16,7 @@ namespace NaSchAmpel
 	public class Spur
 	{
 		public double Länge;
-		public List<Auto> autos = new List<Auto>();
+		//public List<Auto> autos = new List<Auto>();
 		public Spur()
 		{
 		}
