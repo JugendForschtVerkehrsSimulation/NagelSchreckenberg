@@ -71,7 +71,7 @@ namespace NagelSchreckenberg
 				}
 				
 				autos[i].Beschleunigen();
-				autos[i].Bremsen(vordermann, ampeln, schritte);
+				autos[i].Bremsen(vordermann, ampeln, schritte);				//hier ist ein fehler wo ich keine Ahnung hab was zu tun ist, vielleicht weißt du ja was
 				autos[i].Trödeln();
 			}
 			foreach (Auto a in autos)
