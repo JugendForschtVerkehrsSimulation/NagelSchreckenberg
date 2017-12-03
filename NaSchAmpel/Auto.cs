@@ -16,43 +16,54 @@ namespace NagelSchreckenberg
 	/// Description of Auto.
 	/// </summary>
 	public class Auto
-	{
-		public static int Straße = 400;
-		
+	{	
 		private static Random Zufall = new Random();
 		
-		public int Geschwindigkeit;
+		public double Geschwindigkeit;
 		
-		public int MaximalGeschwindigkeit;
+		public double MaximalGeschwindigkeit;
 		
-		public int Position;
+		public double Position;
 		
-		public int Beschleunigung;
+		public double Beschleunigung;
 		
-//		public int Autonummer;
+		public long Autonummer;
 		
 		public Auto()
 		{
 			MaximalGeschwindigkeit = 5;
-			Geschwindigkeit = Zufall.Next(1, MaximalGeschwindigkeit + 1);
+			Geschwindigkeit = 0;
 			Position = 0;
 			Beschleunigung = 1;
 		}
 		
-		public Auto( Auto vordermann ) 
+		public Auto(long index, Auto vordermann, double zielPosi) 
 		{
         	this.MaximalGeschwindigkeit = 5;
-        	this.Geschwindigkeit = Zufall.Next(1, MaximalGeschwindigkeit + 1);
-        	this.Position = vordermann.Position - 3;
+        	this.Geschwindigkeit = 0;
+        	
+        	if (vordermann.Position > zielPosi + 10)
+        	{
+        		this.Position = zielPosi;
+        	}
+        	else
+        	{
+        		this.Position = vordermann.Position - 10;
+        	}
+        	
         	this.Beschleunigung = 1;
+        	
+        	this.Autonummer = index;
     	}
 		
-		public Auto( int zielPosi ) 
+		public Auto(long index, double zielPosi) 
 		{
-        	this.MaximalGeschwindigkeit = 0;
+        	this.MaximalGeschwindigkeit = 5;
         	this.Geschwindigkeit = 0;
         	this.Position = zielPosi;
-        	this.Beschleunigung = 0;
+        	this.Beschleunigung = 1;
+        	
+        	this.Autonummer = index;
     	}
 		
 		public void Beschleunigen()
@@ -62,47 +73,35 @@ namespace NagelSchreckenberg
 				Geschwindigkeit = Geschwindigkeit + Beschleunigung;
 			}
 		}
-		private int EntfernungZumVordermann(Auto Vordermann)
+		
+		private double EntfernungZumVordermann(Auto Vordermann)
 		{
-			if (Vordermann.Position - this.Position < 0)
-			{
-				return Vordermann.Position - this.Position + Straße;
-			}
 		    return Vordermann.Position - this.Position;
 		}
 		
-		private int EntfernungZurAmpel(Ampel[] ampeln, int t)
+		private double EntfernungZurAmpel(Verkehrsregler a, double t)
 		{
-			int aktuellerAbstand;
-			int minimalerAbstand = Straße;
+			double aktuellerAbstand;
+			double minimalerAbstand = 10000000;
 				
-			foreach (Ampel a in ampeln)
-			{
+			
 				if (a.zeigePhase(t) == 1)
 				{
-					if (a.Position - this.Position < 0)
-					{
-						aktuellerAbstand = a.Position - this.Position + Straße;
-					}
-					else
-					{
-						aktuellerAbstand = a.Position - this.Position;
-					}
+					aktuellerAbstand = a.Position - this.Position;
 					
 					if (aktuellerAbstand < minimalerAbstand)
 					{
 						minimalerAbstand = aktuellerAbstand;
 					}
 				}
-			}
 			return minimalerAbstand;
 		}
 		
-		public void Bremsen(Auto Vordermann, Ampel[] ampeln, int t)
+		public void Bremsen(Auto Vordermann, Verkehrsregler ampel, double t)
 		{
-			int entfernungZumVordermann = EntfernungZumVordermann(Vordermann);
-			int entfernungZurAmpel = EntfernungZurAmpel(ampeln, t);
-			int entfernungHindernis;
+			double entfernungZumVordermann = EntfernungZumVordermann(Vordermann);
+			double entfernungZurAmpel = EntfernungZurAmpel(ampel, t);
+			double entfernungHindernis;
 			
 			if (entfernungZurAmpel < entfernungZumVordermann)
 			{

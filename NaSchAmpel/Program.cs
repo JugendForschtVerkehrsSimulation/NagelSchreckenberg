@@ -11,43 +11,46 @@ namespace NagelSchreckenberg
 		
 		public static void Main(string[] args)
 		{
-			
 			Simulation sim = new Simulation();
+			sim.initSimulation();
 			
-			using ( StreamWriter Ausgabe = File.CreateText(ausgabePfad))
-			{
-				Ausgabe.WriteLine("Neue Ampel-Simulation gestartet (Vorbereitung 500 Schritte)");
-				Ausgabe.WriteLine("");
-			}
-			using ( StreamWriter einfacheAusgabe = File.CreateText(einfacheAusgabePfad))
-			{
-				einfacheAusgabe.WriteLine("Neue Ampel-Simulation gestartet (Vorbereitung 500 Schritte)");
-				einfacheAusgabe.WriteLine("");
-			}
+			sim.NaSch();
 			
-			sim.EinfacheAusgabe(einfacheAusgabePfad);
+//			using ( StreamWriter Ausgabe = File.CreateText(ausgabePfad))
+//			{
+//				Ausgabe.WriteLine("Neue Ampel-Simulation gestartet (Vorbereitung 500 Schritte)");
+//				Ausgabe.WriteLine("");
+//			}
+//			using ( StreamWriter einfacheAusgabe = File.CreateText(einfacheAusgabePfad))
+//			{
+//				einfacheAusgabe.WriteLine("Neue Ampel-Simulation gestartet (Vorbereitung 500 Schritte)");
+//				einfacheAusgabe.WriteLine("");
+//			}
+//			
+//			sim.EinfacheAusgabe(einfacheAusgabePfad);
+//			
+//			using ( StreamWriter einfacheAusgabe = File.AppendText(einfacheAusgabePfad))
+//			{
+//				einfacheAusgabe.WriteLine("");
+//			}
+//			
+//			for (int i = 0; i < 500; i++)						//Vorbereitung (500 Runden ohne Ausgabe)
+//			{
+//				sim.NaSch();
+//			}
+//			
+//			sim.schritte = 0;
+//			
+//			for (int i = 0; i < 1000; i++) 						//1000 mal durchlaufen von Simulationsschritten, ...
+//			{
+//				sim.NaSch();
+//				sim.Ausgeben(ausgabePfad);
+//				sim.EinfacheAusgabe(einfacheAusgabePfad);
+//				
+//			}
+//			Console.WriteLine("Simulation beendet.");
+//			Console.ReadLine();
 			
-			using ( StreamWriter einfacheAusgabe = File.AppendText(einfacheAusgabePfad))
-			{
-				einfacheAusgabe.WriteLine("");
-			}
-			
-			for (int i = 0; i < 500; i++)						//Vorbereitung (500 Runden ohne Ausgabe)
-			{
-				sim.NaSch();
-			}
-			
-			sim.schritte = 0;
-			
-			for (int i = 0; i < 1000; i++) 						//1000 mal durchlaufen von Simulationsschritten, ...
-			{
-				sim.NaSch();
-				sim.Ausgeben(ausgabePfad);
-				sim.EinfacheAusgabe(einfacheAusgabePfad);
-				
-			}
-			Console.WriteLine("Simulation beendet.");
-			Console.ReadLine();
 		}
 	}
 }

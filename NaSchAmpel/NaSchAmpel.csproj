@@ -48,7 +48,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ampel.cs" />
+    <Compile Include="Verkehrsregler.cs" />
     <Compile Include="Auto.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
