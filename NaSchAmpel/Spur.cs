@@ -70,13 +70,14 @@ namespace NagelSchreckenberg
 		{
 			for (int i = 0; i < this.autos.Count; i++) 
 			{
+				Auto vordermann = null;
 				if (i == 0)
 				{
-					Auto vordermann = new Auto(0, this.Löschen + 10000);
+					vordermann = new Auto(0, this.Löschen + 10000);
 				}
 				else
 				{
-					Auto vordermann = this.autos[i-1];
+					vordermann = this.autos[i-1];
 				}
 				
 				this.autos[i].Beschleunigen();
