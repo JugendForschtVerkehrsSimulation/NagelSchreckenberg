@@ -28,10 +28,12 @@ namespace NagelSchreckenberg
 		public int maxAutos;
 		
 		public double Länge;											// Ende - Anfang
+		public String Straßenname;
+		
 		public List<Auto> autos = new List<Auto>();
 		public Verkehrsregler ampel = new Verkehrsregler();
 		
-		public Spur(double paramSetzen, double paramAnfang, double paramAmpelposition, double paramEnde, double paramLöschen, int paramMaxAutos)
+		public Spur(double paramSetzen, double paramAnfang, double paramAmpelposition, double paramEnde, double paramLöschen, int paramMaxAutos, long Index)
 		{
 			this.Setzen = paramSetzen;
 			this.Anfang = paramAnfang;
@@ -43,6 +45,23 @@ namespace NagelSchreckenberg
 			//this.SpurReferenz = sim.HoleSpurIndex();
 			
 			this.Länge = Ende - Anfang;
+			
+			if (Index == 0)
+			{
+				this.Straßenname = "Wielandstraße West-Ost";
+			}
+			else if (Index == 1)
+			{
+				this.Straßenname = "Wielandstraße Ost-West";
+			}
+			else if (Index == 2)
+			{
+				this.Straßenname = "Eberhardtstraße - Talfingerstraße";
+			}
+			else if (Index == 3)
+			{
+				this.Straßenname = "Talfingerstraße - Eberhardtstraße";
+			}
 		}
 		
 		public void initAmpelInSpur(double ULZ, double GPL, double VER)
@@ -67,35 +86,34 @@ namespace NagelSchreckenberg
 		}
 		
 		public void Bewegung(double Zeit)
-		{
-			for (int i = 0; i < this.autos.Count; i++) 
-			{
-				if (i == 0)
-				{
-					Auto vordermann = new Auto(0, this.Löschen + 10000);
-				}
-				else
-				{
-					Auto vordermann = this.autos[i-1];
-				}
-				
-				this.autos[i].Beschleunigen();
-				this.autos[i].Bremsen(vordermann, this.ampel, Zeit);				//hier ist ein fehler wo ich keine Ahnung hab was zu tun ist, vielleicht weißt du ja was
-				this.autos[i].Trödeln();
-			}
-			foreach (Auto a in autos)
-			{
-				a.Fahren();
-			}
-			for (int i = 0; i < autos.Count; i++)
-			{
-				if ( autos[i].Position > this.Löschen )
-				{
-					autos.RemoveAt(i);
-				}
-			}
-			
-			
+ 		{
+ 			for (int i = 0; i < this.autos.Count; i++) 
+ 			{
+				Auto vordermann = null;
+ 				if (i == 0)
+ 				{
+					vordermann = new Auto(0, this.Löschen + 10000);
+ 				}
+ 				else
+ 				{
+					vordermann = this.autos[i-1];
+ 				}
+ 				
+ 				this.autos[i].Beschleunigen();
+ 				this.autos[i].Bremsen(vordermann, this.ampel, Zeit);				//hier ist ein fehler wo ich keine Ahnung hab was zu tun ist, vielleicht weißt du ja was
+ 				this.autos[i].Trödeln();
+ 			}
+ 			foreach (Auto a in autos)
+ 			{
+ 				a.Fahren();
+ 			}
+ 			for (int i = 0; i < autos.Count; i++)
+ 			{
+ 				if ( autos[i].Position > this.Löschen )
+ 				{
+ 					autos.RemoveAt(i);
+ 				}
+ 			}
 		}
 		
 		public long HoleIndex()

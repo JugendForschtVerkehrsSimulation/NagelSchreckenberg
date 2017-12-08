@@ -20,13 +20,9 @@ namespace NagelSchreckenberg
 		private static Random Zufall = new Random();
 		
 		public double Geschwindigkeit;
-		
 		public double MaximalGeschwindigkeit;
-		
 		public double Position;
-		
 		public double Beschleunigung;
-		
 		public long Autonummer;
 		
 		public Auto()
@@ -140,6 +136,7 @@ namespace NagelSchreckenberg
 		{
 
 			return string.Format("{0},{1}", Geschwindigkeit, Position);
+			// printf("Auto: %3d Zeit: %7.2f")
 		}
 
 	}

@@ -23,6 +23,7 @@ namespace NagelSchreckenberg
 		public double Zeitschritt = 0.1;
 		
 		public long SpurIndex = 0;
+		// 0 = Wielanstraße West - Ost	1 = Wielandstraße Ost-West	2 = Eberhardtstraße - Talfingerstraße	3 = Talfingerstraße - Eberhardtstraße
 		
 		public List<Spur> Spuren = new List<Spur>();
 		
@@ -44,8 +45,9 @@ namespace NagelSchreckenberg
 		
 		public void initSimulation()
 		{
-			Spuren.Add(new Spur(-250, -200, 0, 200, 250, 25));
-			Spuren[0].initAmpelInSpur(88, 40, 0);							// ULZ, GPL, VER
+			Spuren.Add(new Spur(-250, -200, 0, 200, 250, 25, SpurIndex));
+			Spuren[0].initAmpelInSpur(88, 40, 0);
+								  // ULZ, GPL, VER
 		}
 		
 		public void EinfacheAusgabe(string pfadName) {
@@ -80,14 +82,20 @@ namespace NagelSchreckenberg
 		
 		public void Ausgeben(string pfadName)
 		{
-//			using ( StreamWriter ausgabe = File.AppendText(pfadName))
-//			{
-//				foreach (Auto a in autos)
-//				{
-//					ausgabe.WriteLine("{0},{1}",schritte, a);
-//				}
-//				
-//			}
+			using ( StreamWriter ausgabe = File.AppendText(pfadName))
+			{
+				foreach (Spur s in Spuren)
+				{
+					ausgabe.WriteLine("Spur: " +s.Straßenname);					
+				
+					foreach (Auto a in s.autos)
+					{
+						ausgabe.WriteLine("Autonummer: " + a.Autonummer + " Zeit: {0}",Math.Round(Zeit, 2) + " Geschwindigkeit: " + a.Geschwindigkeit + " MaximaleGeschwindigkeit: " + a.MaximalGeschwindigkeit + " Position: " + a.Position);
+					}
+				
+					ausgabe.WriteLine("");
+				}
+			}
 		}
 		
 		public long HoleSpurIndex()
