@@ -26,6 +26,7 @@ namespace NagelSchreckenberg
 		public long SpurReferenz;
 		public long FahrzeugsIndex = 0;									// Index für Autonummern
 		public int maxAutos;
+		public long SpurNummer;
 		
 		public double Länge;											// Ende - Anfang
 		public String Straßenname;
@@ -45,6 +46,8 @@ namespace NagelSchreckenberg
 			//this.SpurReferenz = sim.HoleSpurIndex();
 			
 			this.Länge = Ende - Anfang;
+			
+			this.SpurNummer = Index;
 			
 			if (Index == 0)
 			{
@@ -71,7 +74,7 @@ namespace NagelSchreckenberg
 		
 		public void setzeAuto(int i)
 		{
-			if ( this.autos.Count <= this.maxAutos)
+			if ( this.autos.Count < this.maxAutos)
 			{
         		if ( this.autos.Count == 0 ) 
         		{
@@ -85,7 +88,7 @@ namespace NagelSchreckenberg
    			}
 		}
 		
-		public void Bewegung(double Zeit)
+		public void Bewegung(double Zeit, double Zeitschritt)
  		{
  			for (int i = 0; i < this.autos.Count; i++) 
  			{
@@ -99,13 +102,12 @@ namespace NagelSchreckenberg
 					vordermann = this.autos[i-1];
  				}
  				
- 				this.autos[i].Beschleunigen();
- 				this.autos[i].Bremsen(vordermann, this.ampel, Zeit);				//hier ist ein fehler wo ich keine Ahnung hab was zu tun ist, vielleicht weißt du ja was
- 				this.autos[i].Trödeln();
+ 				this.autos[i].Beschleunigen(Zeitschritt, vordermann, this.ampel, Zeit);
+// 				this.autos[i].Trödeln();
  			}
  			foreach (Auto a in autos)
  			{
- 				a.Fahren();
+ 				a.Fahren(Zeitschritt);
  			}
  			for (int i = 0; i < autos.Count; i++)
  			{

@@ -19,25 +19,32 @@ namespace NagelSchreckenberg
 	{	
 		private static Random Zufall = new Random();
 		
-		public double Geschwindigkeit;
-		public double MaximalGeschwindigkeit;
-		public double Position;
-		public double Beschleunigung;
+		public double Geschwindigkeit;					// v
+		public double Position;							// 
+		public double Beschleunigung;					// dv
+		
+		public double MaximaleBeschleunigung = 0.3;		// a	m/s^2
+		public double MaximalGeschwindigkeit = 16.7;	// v0	m/s		16.7 ~ 60 km/h
+		public double BeschleunigungsExponent = 4;		// 4
+		public double BremsExponent = 2;				// 2
+		public double minimalerSicherheitsAbstand = 2;	// s0	 m		2
+		public double minimaleAbstandsZeit = 1.5;		// T	 s		1.5
+		public double Bremskraft = 3;					// b	m/s		3
+		
 		public long Autonummer;
 		
 		public Auto()
 		{
-			MaximalGeschwindigkeit = 5;
 			Geschwindigkeit = 0;
 			Position = 0;
-			Beschleunigung = 1;
+			Beschleunigung = 0;
 		}
 		
 		public Auto(long index, Auto vordermann, double zielPosi) 
 		{
-        	this.MaximalGeschwindigkeit = 5;
-        	this.Geschwindigkeit = 0;
-        	
+			Geschwindigkeit = 0;
+			Beschleunigung = 0;
+			
         	if (vordermann.Position > zielPosi + 10)
         	{
         		this.Position = zielPosi;
@@ -47,27 +54,51 @@ namespace NagelSchreckenberg
         		this.Position = vordermann.Position - 10;
         	}
         	
-        	this.Beschleunigung = 1;
-        	
         	this.Autonummer = index;
     	}
 		
 		public Auto(long index, double zielPosi) 
 		{
-        	this.MaximalGeschwindigkeit = 5;
-        	this.Geschwindigkeit = 0;
+			Geschwindigkeit = 0;
+			Beschleunigung = 0;
+			
         	this.Position = zielPosi;
-        	this.Beschleunigung = 1;
         	
         	this.Autonummer = index;
     	}
 		
-		public void Beschleunigen()
+		public void Beschleunigen(double Zeitschritt, Auto Vordermann, Verkehrsregler ampel, double t)
 		{
-			if (Geschwindigkeit < MaximalGeschwindigkeit)
+			double entfernungZumVordermann = EntfernungZumVordermann(Vordermann);
+			double entfernungZurAmpel = EntfernungZurAmpel(ampel, t);
+			double entfernungHindernis;
+			double sicherheitsAbstand;		// s*
+			double Geschwindigkeitsunterschied;
+			
+			if (entfernungZurAmpel < entfernungZumVordermann)
 			{
-				Geschwindigkeit = Geschwindigkeit + Beschleunigung;
+				entfernungHindernis = entfernungZurAmpel;
+				Geschwindigkeitsunterschied = this.Geschwindigkeit - 0;
 			}
+			else
+			{
+				entfernungHindernis = entfernungZumVordermann;
+				Geschwindigkeitsunterschied = this.Geschwindigkeit - Vordermann.Geschwindigkeit;
+			}
+			
+			double HilfsAbstand = Geschwindigkeit * minimaleAbstandsZeit + this.Geschwindigkeit * (Geschwindigkeitsunterschied) / entfernungHindernis;
+			
+			if ( 0 > HilfsAbstand)
+			{
+				sicherheitsAbstand = minimalerSicherheitsAbstand + 0;			// s*
+			}
+			else
+			{
+			sicherheitsAbstand = minimalerSicherheitsAbstand + HilfsAbstand;			// s*
+			}
+			Beschleunigung = MaximaleBeschleunigung * ( 1 - Math.Pow(( Geschwindigkeit / MaximalGeschwindigkeit ), BeschleunigungsExponent));
+			Beschleunigung = Beschleunigung - MaximaleBeschleunigung * Math.Pow(( sicherheitsAbstand / entfernungHindernis ), BremsExponent);
+			Geschwindigkeit += Beschleunigung * Zeitschritt;
 		}
 		
 		private double EntfernungZumVordermann(Auto Vordermann)
@@ -92,44 +123,18 @@ namespace NagelSchreckenberg
 				}
 			return minimalerAbstand;
 		}
+
+//		public void Trödeln()
+//		{
+//			if (Zufall.NextDouble() < 0.05 && Geschwindigkeit > 0)
+//			{
+//				Geschwindigkeit--;
+//			}
+//		}
 		
-		public void Bremsen(Auto Vordermann, Verkehrsregler ampel, double t)
+		public void Fahren(double Zeitschritt)
 		{
-			double entfernungZumVordermann = EntfernungZumVordermann(Vordermann);
-			double entfernungZurAmpel = EntfernungZurAmpel(ampel, t);
-			double entfernungHindernis;
-			
-			if (entfernungZurAmpel < entfernungZumVordermann)
-			{
-				entfernungHindernis = entfernungZurAmpel;
-			}
-			else
-			{
-				entfernungHindernis = entfernungZumVordermann;
-			}
-			
-			if (Geschwindigkeit >= entfernungHindernis)
-			{
-				Geschwindigkeit = entfernungHindernis - 1;
-			}
-			
-			if (Geschwindigkeit < 0)
-			{
-				Geschwindigkeit = 0;
-			}
-		}
-		
-		public void Trödeln()
-		{
-			if (Zufall.NextDouble() < 0.05 && Geschwindigkeit > 0)
-			{
-				Geschwindigkeit--;
-			}
-		}
-		
-		public void Fahren()
-		{
-			Position = Position + Geschwindigkeit;
+			Position = Position + Geschwindigkeit * Zeitschritt;
 		}
 		
 		public override string ToString()

@@ -10,6 +10,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace NagelSchreckenberg
 {
@@ -32,12 +33,20 @@ namespace NagelSchreckenberg
 			
 		}
 		
+		public void Clear (string ausgabePfad)
+		{
+			using ( StreamWriter ausgabe = File.CreateText(ausgabePfad))
+			{
+				ausgabe.Write("");
+			}
+		}
+		
 		public void NaSch()
 		{
 			for ( int i=0; i < Spuren.Count; i++ )
 			{
 				Spuren[i].setzeAuto(i);
-				Spuren[i].Bewegung(Zeit);				
+				Spuren[i].Bewegung(Zeit, Zeitschritt);				
 			}
 			
 			Zeit += Zeitschritt;
@@ -45,55 +54,33 @@ namespace NagelSchreckenberg
 		
 		public void initSimulation()
 		{
-			Spuren.Add(new Spur(-250, -200, 0, 200, 250, 25, SpurIndex));
+			Spuren.Add(new Spur(-250, -200, 0, 200, 250, 2, SpurIndex));
+			SpurIndex++;
+			Spuren.Add(new Spur(-250, -200, 0, 200, 250, 2, SpurIndex));
+			SpurIndex++;
+			Spuren.Add(new Spur(-250, -200, 0, 200, 250, 2, SpurIndex));
+			SpurIndex++;
+			Spuren.Add(new Spur(-250, -200, 0, 200, 250, 2, SpurIndex));
+
 			Spuren[0].initAmpelInSpur(88, 40, 0);
 								  // ULZ, GPL, VER
-		}
-		
-		public void EinfacheAusgabe(string pfadName) {
-			
-//			using ( StreamWriter einfacheAusgabe = File.AppendText(pfadName))
-//			{
-//				System.Text.StringBuilder einfacheAusgabeText = new System.Text.StringBuilder();
-//				
-//				for (int Länge = 0; Länge < Auto.Straße; Länge++)
-//				{
-//					einfacheAusgabeText.Append("").Append(".").Append("");
-//				}
-//				
-//				foreach (Auto a in autos)
-//				{
-//					einfacheAusgabeText[Convert.ToInt32(a.Position)] = Convert.ToChar(Convert.ToString(Convert.ToInt32(a.Geschwindigkeit)));
-//				}
-//				foreach (Ampel a in ampeln)
-//				{
-//					if (a.zeigePhase(schritte) == 0)
-//					{
-//						einfacheAusgabeText[Convert.ToInt32(a.Position)] = 'G';
-//					}
-//					else
-//					{
-//						einfacheAusgabeText[Convert.ToInt32(a.Position)] = 'R';
-//					}
-//				}
-//				einfacheAusgabe.WriteLine(einfacheAusgabeText.ToString());
-//			}
 		}
 		
 		public void Ausgeben(string pfadName)
 		{
 			using ( StreamWriter ausgabe = File.AppendText(pfadName))
 			{
+				CultureInfo invC = CultureInfo.InvariantCulture;
+				
+				ausgabe.WriteLine("TIME " + Zeit.ToString("F2",invC) + " " + Zeitschritt.ToString("F2",invC) + " " + Spuren.Count);
 				foreach (Spur s in Spuren)
 				{
-					ausgabe.WriteLine("Spur: " +s.Straßenname);					
-				
+					ausgabe.WriteLine("SPUR " + s.SpurNummer + " " + Zeit.ToString("F2",invC) + " " + s.autos.Count);
+					ausgabe.WriteLine("AMPEL " + s.SpurNummer + " " + Zeit.ToString("F2",invC) + " " + s.ampel.Position.ToString("F2",invC) + " " + s.ampel.zeigePhase(Zeit));
 					foreach (Auto a in s.autos)
 					{
-						ausgabe.WriteLine("Autonummer: " + a.Autonummer + " Zeit: {0}",Math.Round(Zeit, 2) + " Geschwindigkeit: " + a.Geschwindigkeit + " MaximaleGeschwindigkeit: " + a.MaximalGeschwindigkeit + " Position: " + a.Position);
+						ausgabe.WriteLine("Auto " + a.Autonummer + " " + s.SpurNummer + " " + Zeit.ToString("F2",invC) + " " + a.Position.ToString("F2",invC) + " " + a.Geschwindigkeit.ToString("F2",invC) + " " + a.Beschleunigung.ToString("F2",invC));
 					}
-				
-					ausgabe.WriteLine("");
 				}
 			}
 		}
